@@ -1,0 +1,53 @@
+{% load furniture_tags %}
+
+        <div class="shop_sidebar_area">
+
+            <!-- ##### Single Widget ##### -->
+            <div class="widget catagory mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">Categories</h6>
+                <!--  Catagories  -->
+                <div class="catagories-menu">
+                    <ul>
+                        {% get_categories as categories %}
+                        {% for category in categories %}
+                        <li><a href="?{% query_transform request 'category' category.id %}">{{ category.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ##### Single Widget ##### -->
+            <div class="widget brands mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">Brands</h6>
+
+                <div class="catagories-menu">
+                   <ul>
+                        {% get_brands as brands %}
+                        {% for brand in brands %}
+                        <li><a href="?{% query_transform request 'brand' brand.id %}">{{ brand.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ##### Single Widget ##### -->
+            <div class="widget price mb-50">
+                <!-- Widget Title -->
+                <h6 class="widget-title mb-30">Price</h6>
+
+                <div class="catagories-menu">
+                   <ul>
+                        <li><a href="?{% query_transform request 'price' '0_50' %}">Less than $50</a></li>
+                       <li><a href="?{% query_transform request 'price' '50_100' %}">$50-$100</a></li>
+                       <li><a href="?{% query_transform request 'price' '100_250' %}">$100-$250</a></li>
+                       <li><a href="?{% query_transform request 'price' '250_500' %}">$250-$500</a></li>
+                       <li><a href="?{% query_transform request 'price' '500_1000' %}">$500-$1000</a></li>
+                       <li><a href="?{% query_transform request 'price' '1000_5000' %}">$1000-$5000</a></li>
+                       <li><a href="?{% query_transform request 'price' 'more_5000' %}"> More than $5000</a></li>
+
+                    </ul>
+                </div>
+            </div>
+        </div>

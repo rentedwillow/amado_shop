@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+    <!-- ##### Main Content Wrapper Start ##### -->
+        {% include 'furniture/components/shop/_sidebar.html' %}
+
+        {% include 'furniture/components/favourite/_favourite_list.html' %}
+    <!-- ##### Main Content Wrapper End ##### -->
+{% endblock main %}

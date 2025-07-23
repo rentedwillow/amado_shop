@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block main %}
+        <!-- Product Catagories Area Start -->
+        <div class="products-catagories-area clearfix">
+            <div class="amado-pro-catagory clearfix">
+
+                {% for product in products.all|slice:"10" %}
+                <div class="single-products-catagory clearfix">
+                    <a href="{% url 'product' product.slug %}">
+                        <img src="{{ product.get_first_image }}" alt="">
+                        <!-- Hover Content -->
+                        <div class="hover-content">
+                            <div class="line"></div>
+                            <h4>{{ product.title }}</h4>
+                            <p>From ${{ product.get_discount_price }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- Product Catagories Area End -->
+{% endblock main %}

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block main %}
+        <div class="cart-table-area section-padding-100">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12 col-lg-9">
+                        <div class="cart-title mt-50">
+                            <h2>Shopping Cart</h2>
+                        </div>
+
+                        <div class="cart-table clearfix">
+                            <table class="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Name</th>
+                                        <th>Price</th>
+                                        <th class="ml-5">Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for cart_product in products %}
+                                    <tr>
+                                        <td class="cart_product_img">
+                                            <a href="#"><img src="{{ cart_product.product.get_first_image }}" alt="Product"></a>
+                                        </td>
+                                        <td class="cart_product_desc">
+                                            <h5>{{ cart_product.product.title }}</h5>
+                                        </td>
+                                        <td class="price">
+                                            <span>${{ cart_product.get_total_price }}</span>
+                                        </td>
+
+                                        <td class="qty">
+                                            <div class="qty-btn d-flex align-items-center">
+                                                <div class="input-group product-qty align-items-center">
+                                                    <span class="input-group-btn">
+                                                        <a href="{% url 'plus_minus' cart_product.product.pk 'delete' cart_product.color cart_product.size 1 %}" class="quantity-left-minus btn btn-light btn-number d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;">
+                                                            -
+                                                        </a>
+                                                    </span>
+                                                    <input type="text" id="quantity" name="quantity" class="form-control input-number text-center p-1 mx-2" value="{{ cart_product.quantity }}">
+                                                    <span class="input-group-btn">
+                                                        <a href="{% url 'plus_minus' cart_product.product.pk 'add' cart_product.color cart_product.size 1 %}" class="quantity-right-plus btn btn-light btn-number d-flex justify-content-center align-items-center" style="width: 32px; height: 32px;">
+                                                            +
+                                                        </a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+
+
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3">
+                        <div class="cart-summary">
+                            <h5>Cart Total</h5>
+                            <ul class="summary-table">
+                                <li><span>Total quantity:</span> <span>{{ cart_total_quantity }}</span></li>
+                                <li><span>Total price:</span> <span>${{ cart_total_price }}</span></li>
+                            </ul>
+
+
+                            <div class="cart-btn mt-100">
+                                <a href="{% url 'clear' %}" class="btn amado-btn w-100 active mx-auto mb-3">Clear cart</a>
+                                <a href="{% url 'checkout' %}" class="btn amado-btn w-100">Checkout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock main %}

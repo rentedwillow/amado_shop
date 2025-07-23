@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load furniture_tags %}
+{% block main %}
+        <!-- Product Details Area Start -->
+        <div class="single-product-area section-padding-100 clearfix">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mt-50">
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item"><a href="#">{{ product.category.title }}</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">{{ product.title }}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-lg-7">
+                        <div class="single_product_thumb">
+    <div id="product_details_slider" class="carousel slide" data-ride="carousel">
+
+        <!-- Carousel Indicators -->
+        <ol class="carousel-indicators">
+            {% if product.images.count > 1 %}
+                {% for image in product.images.all %}
+                    <li data-target="#product_details_slider" data-slide-to="{{ forloop.counter0 }}" style="background-image: url({{ image.image.url }});" class="{% if forloop.first %}active{% endif %}"></li>
+                {% endfor %}
+            {% else %}
+                <!-- Если только одно изображение, используем get_first_image -->
+                <li class="active" data-target="#product_details_slider" data-slide-to="0" style="background-image: url({{ product.get_first_image }});"></li>
+            {% endif %}
+        </ol>
+        <!-- Carousel Items -->
+        <div class="carousel-inner">
+            {% if product.images.count > 1 %}
+                {% for image in product.images.all %}
+                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <a class="gallery_img" href="{{ image.image.url }}">
+                            <img class="d-block w-100" src="{{ image.image.url }}" alt="Product slide {{ forloop.counter }}">
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Только одно изображение -->
+                <div class="carousel-item active">
+                    <a class="gallery_img" href="{{ product.get_first_image }}">
+                        <img class="d-block w-100" src="{{ product.get_first_image }}" alt="Product slide 1">
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+                    </div>
+                    <div class="col-12 col-lg-5">
+                        <div class="single_product_desc">
+                            <!-- Product Meta Data -->
+                            <div class="product-meta-data">
+                                <div class="line"></div>
+                                {% if product.discount > 0 %}
+                                <strong class="product-price">${{ product.get_discount_price }}</strong>
+                                <del class="h5 ms-2">${{ product.price }}</del>
+                                {% else %}
+                                <strong class="text-primary display-6 fw-bold">${{ product.get_discount_price }}</strong>
+                                {% endif %}
+                                <a href="">
+                                    <h6>{{ product.title }}</h6>
+                                </a>
+                                <!-- Ratings & Review -->
+                                <div class="ratings-review mb-15 d-flex align-items-center justify-content-between">
+                                    <div class="ratings">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                                <!-- Avaiable -->
+                                {% if product.in_stock > 0 %}
+                                <p class="avaibility"><i class="fa fa-circle mr-2"></i>{{ product.in_stock }} in Stock</p>
+                                {% else %}
+                                <p class="avaibility"><i class="fa fa-circle mr-2" style="color: red;"></i>Out of Stock</p>
+                                {% endif %}
+                            </div>
+
+                            <div class="short_overview my-5">
+                                <p>{{ product.short_description }}</p>
+                            </div>
+
+                            <!-- Add to Cart Form -->
+                            <form action="{% url 'to_cart' product.pk %}" class="cart clearfix" method="post">
+                                <div class="cart-btn d-flex mb-50">
+                                    {% csrf_token %}
+                                    {{ form.color }}
+                                    {{ form.size }}
+
+                                    <div class="product-options">
+                                        <!-- Цвет -->
+                                        <div class="color-options product-select">
+                                            <p>Color</p>
+                                            <ul class="select-list list-unstyled d-flex">
+                                                {% for color in form.color.field.queryset %}
+                                                    <li data-value="{{ color.id }}" class="select-item color-item pt-3">
+                                                        <a class="btn btn-light">{{ color.color.title }}</a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+
+                                        <!-- Размер -->
+                                        <div class="swatch product-select pt-3">
+                                            <p>Size</p>
+                                            <ul class="select-list list-unstyled d-flex">
+                                                {% for size in form.size.field.queryset %}
+                                                    <li data-value="{{ size.id }}" class="select-item size-item pt-3">
+                                                        <a class="btn btn-light">{{ size.size.title }}</a>
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+
+                                        <div class="quantity pt-3">
+                                            <div class="quantity-label d-flex align-items-center">
+                                                <p>Quantity</p>
+                                                <input type="number" id="quantity" name="quantity" class="form-control qty-text" value="1"
+                                                       min="1" max="{{ product.in_stock }}" data-stock="{{ product.in_stock }}">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                {% if request.user.is_authenticated %}
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <button type="submit" name="addtocart" value="5" class="btn amado-btn">Add to cart</button>
+                                </div>
+                                {% endif %}
+                            </form>
+                            {% if request.user.is_authenticated %}
+                            <div class="amado-btn-group mt-30 d-flex justify-content-center align-items-center">
+                                {% check_wishlist request product.pk as wish %}
+                                <a href="{% url 'wishlist_action' product.pk %}" class="btn amado-btn active">
+                                    {% if wish %}
+                                    Delete from favourite
+                                    {% else %}
+                                    Add to favourite
+                                    {% endif %}
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+<script>
+    // JavaScript для обработки выбора размеров и цветов
+    document.addEventListener('DOMContentLoaded', function() {
+        // Для выбора размеров
+        const sizeItems = document.querySelectorAll('.size-item a');
+        const hiddenSizeInput = document.querySelector('input[name="size"]');
+
+        if (hiddenSizeInput) {
+            sizeItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Убираем активное состояние с предыдущих размеров
+                    sizeItems.forEach(a => a.classList.remove('active'));
+
+                    // Добавляем активное состояние для текущего размера
+                    this.classList.add('active');
+
+                    // Устанавливаем значение в скрытое поле для размера
+                    hiddenSizeInput.value = this.closest('li').getAttribute('data-value');
+                });
+            });
+        } else {
+            console.error("Поле для выбора размера не найдено.");
+        }
+
+        // Для выбора цветов
+        const colorItems = document.querySelectorAll('.color-item a');
+        const hiddenColorInput = document.querySelector('input[name="color"]');
+
+        if (hiddenColorInput) {
+            colorItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Убираем активное состояние с предыдущих цветов
+                    colorItems.forEach(a => a.classList.remove('active'));
+
+                    // Добавляем активное состояние для текущего цвета
+                    this.classList.add('active');
+
+                    // Устанавливаем значение в скрытое поле для цвета
+                    hiddenColorInput.value = this.closest('li').getAttribute('data-value');
+                });
+            });
+        } else {
+            console.error("Поле для выбора цвета не найдено.");
+        }
+    });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const quantityInput = document.getElementById('quantity');
+    const stockNumber = document.querySelector('.stock-number em');
+    const stockLimit = parseInt(quantityInput.getAttribute('data-stock')); // Доступное количество на складе
+
+    // Уменьшить количество
+    document.querySelector('.quantity-left-minus').addEventListener('click', function (e) {
+        e.preventDefault();
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue > 1) {
+            quantityInput.value = currentValue - 1;
+            updateStockNumber(stockLimit - quantityInput.value);
+        }
+    });
+
+    // Увеличить количество
+    document.querySelector('.quantity-right-plus').addEventListener('click', function (e) {
+        e.preventDefault();
+        let currentValue = parseInt(quantityInput.value);
+        if (currentValue < stockLimit) {
+            quantityInput.value = currentValue + 1;
+            updateStockNumber(stockLimit - quantityInput.value);
+        }
+    });
+
+    // Функция для обновления текста "in stock"
+    function updateStockNumber(remainingStock) {
+        stockNumber.textContent = `${remainingStock} in stock`;
+    }
+
+    // Инициализация
+    updateStockNumber(stockLimit - quantityInput.value);
+});
+
+
+</script>
+{% endblock main %}
+

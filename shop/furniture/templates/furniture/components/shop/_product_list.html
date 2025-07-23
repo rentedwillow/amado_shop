@@ -1,0 +1,120 @@
+{% load furniture_tags %}
+
+        <div class="amado_product_area section-padding-100">
+            <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="product-topbar d-xl-flex align-items-end justify-content-between">
+                            <!-- Total Products -->
+                            <div class="total-products">
+                                <p>Showing 1-8 0f 25</p>
+                            </div>
+                            <!-- Sorting -->
+                            <div class="product-sorting d-flex">
+                                <div class="sort-by-date d-flex align-items-center mr-15">
+                                    <p>Sort by</p>
+                                    <div class="dropdown">
+                                        <button class="btn btn-light dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                                            {% if request.GET.sort == 'title' %}
+                                            Name (A - Z)
+                                            {% elif request.GET.sort == '-title' %}
+                                            Name (Z - A)
+                                            {% elif request.GET.sort == 'price' %}
+                                            Price (Low-High)
+                                            {% elif request.GET.sort == '-price' %}
+                                            Price (High-Low)
+                                            {% else %}
+                                            Default sorting
+                                            {% endif %}
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            {% get_sorters as sorters %}
+                                            <li><a class="dropdown-item h6" href="{% url 'shop' %}">Default sorting</a></li>
+                                            {% for sorter in sorters %}
+                                            <li><a class="dropdown-item h6" href="?{% query_transform request 'sort' sorter.0 %}">{{ sorter.1 }}</a></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <!-- Single Product Area -->
+                    {% for product in products %}
+                    <div class="col-12 col-sm-6 col-md-12 col-xl-6">
+                        <div class="single-product-wrapper">
+                            <!-- Product Image -->
+                            <div class="product-img">
+                                <a href="{% url 'product' product.slug %}"><img src="{{ product.get_first_image }}" alt=""></a>
+                            </div>
+
+                            <!-- Product Description -->
+                            <div class="product-description d-flex align-items-center justify-content-between">
+                                <!-- Product Meta Data -->
+                                <div class="product-meta-data">
+                                    <div class="line"></div>
+                                    <p class="product-price">${{ product.get_discount_price }}</p>
+                                    <a href="{% url 'product' product.slug %}">
+                                        <h6>{{ product.title }}</h6>
+                                    </a>
+                                </div>
+                                <!-- Ratings & Cart -->
+                                <div class="ratings-cart text-right">
+                                    <div class="ratings">
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="cart">
+                                        <a href="cart.html" data-toggle="tooltip" data-placement="left" title="Add to Cart"><img src="img/core-img/cart.png" alt=""></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <!-- Pagination -->
+                        <nav aria-label="navigation">
+                            <ul class="pagination justify-content-end mt-50">
+                            {% if products.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% query_transform request 'page' products.previous_page_number %}">
+                                    <iconify-icon icon="ic:baseline-keyboard-arrow-left" class="pagination-arrow fs-1"></iconify-icon>
+                                </a>
+                            </li>
+                            {% endif %}
+                            {% for page in products.paginator.page_range %}
+                            {% if products.number == page %}
+                            <li class="page-item active">
+                                <a class="page-link" href="">{{ page }}</a>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% query_transform request 'page' page %}">{{ page }}</a>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                            {% if products.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?{% query_transform request 'page' products.next_page_number %}">
+                                    <iconify-icon icon="ic:baseline-keyboard-arrow-left" class="pagination-arrow fs-1"></iconify-icon>
+                                </a>
+                            </li>
+                            </ul>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
